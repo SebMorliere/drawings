@@ -15,7 +15,7 @@ public class Main extends JFrame {
 
         EventQueue.invokeLater(() -> {
             ArrayList<Drawable> drawables = new ArrayList<>();
-            drawables.add(new Points(new Size()));
+            drawables.add(new Points(new Sizable()));
             drawables.add(new Lines());
             drawables.add(new BasicStrokes());
 
@@ -37,8 +37,8 @@ public class Main extends JFrame {
                     int w = e.getComponent().getWidth();
                     int h = e.getComponent().getHeight();
                     drawables.forEach(drawable -> {
-                        if (drawable instanceof Size) {
-                            ((Size) drawable).resize(new Size(w, h));
+                        if (drawable instanceof Sizable) {
+                            ((Sizable) drawable).resize(new Sizable(w, h));
                         }
                     });
 

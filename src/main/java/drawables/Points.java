@@ -3,11 +3,11 @@ package drawables;
 import java.awt.*;
 import java.util.Random;
 
-public class Points extends Size implements Drawable {
+public class Points extends Sizable implements Drawable {
 
-    public Points(Size size) {
-        this.width = size.width;
-        this.height = size.height;
+    public Points(Sizable sizable) {
+        this.width = sizable.width;
+        this.height = sizable.height;
     }
 
     public void draw(Graphics2D g2d) {

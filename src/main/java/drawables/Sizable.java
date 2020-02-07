@@ -3,21 +3,21 @@ package drawables;
 import static conf.Default.HEIGHT;
 import static conf.Default.WIDTH;
 
-public class Size {
+public class Sizable {
     int width;
     int height;
 
-    public Size() {
+    public Sizable() {
         this.height = HEIGHT;
         this.width = WIDTH;
     }
 
-    public void resize(Size size) {
-        this.height = size.height;
-        this.width = size.width;
+    public void resize(Sizable sizable) {
+        this.height = sizable.height;
+        this.width = sizable.width;
     }
 
-    public Size(int width, int height) {
+    public Sizable(int width, int height) {
         this.width = width;
         this.height = height;
     }
