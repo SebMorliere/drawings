@@ -1,8 +1,9 @@
+package drawables;
+
 import java.awt.*;
 
-public class BasicStrokes extends Component implements Drawable {
-    public void draw(Graphics graphics) {
-        Graphics2D graphics2D = (Graphics2D) graphics.create();
+public class BasicStrokes implements Drawable {
+    public void draw(Graphics2D graphics2D) {
         float[] dash1 = {2f, 0f, 2f};
         float[] dash2 = {1f, 1f, 1f};
         float[] dash3 = {4f, 0f, 2f};

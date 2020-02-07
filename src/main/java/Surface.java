@@ -1,19 +1,19 @@
+import drawables.Drawable;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Surface extends JPanel implements ActionListener {
-    private static final int DELAY = 100;
     private Timer timer;
+    private ArrayList<Drawable> drawables;
 
-    public Surface() {
-        initTimer(DELAY);
-    }
-
-    private void initTimer(int delay) {
-        timer = new Timer(delay, this);
-        timer.start();
+    public Surface(ArrayList<Drawable> drawables) {
+        this.timer = new Timer(Main.DELAY, this);
+        this.timer.start();
+        this.drawables = drawables;
     }
 
     public Timer getTimer() {
@@ -23,10 +23,8 @@ public class Surface extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-
-        new Points().draw(graphics);
-        new Lines().draw(graphics);
-        new BasicStrokes().draw(graphics);
+        Graphics2D g2d = (Graphics2D) graphics;
+        drawables.forEach(dr -> dr.draw(g2d));
     }
 
     @Override

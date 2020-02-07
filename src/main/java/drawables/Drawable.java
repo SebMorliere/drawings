@@ -1,5 +1,7 @@
+package drawables;
+
 import java.awt.*;
 
 public interface Drawable {
-    void draw(Graphics g);
+    void draw(Graphics2D g);
 }
