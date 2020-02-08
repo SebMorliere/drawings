@@ -1,4 +1,4 @@
-package drawables;
+package examples;
 
 import static conf.Default.HEIGHT;
 import static conf.Default.WIDTH;
