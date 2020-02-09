@@ -6,14 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import static conf.Default.DELAY;
+import static conf.Default.REFRESH_RATE;
 
 public class Surface extends JPanel implements ActionListener {
     private Timer timer;
     private ArrayList<Drawable> drawables;
 
     public Surface(ArrayList<Drawable> drawables) {
-        this.timer = new Timer(DELAY, this);
+        this.timer = new Timer(REFRESH_RATE, this);
         this.timer.start();
         this.drawables = drawables;
     }

@@ -3,8 +3,15 @@ package Surfaces;
 import java.util.Collections;
 import java.util.Random;
 
-public class HorizonPoint {
+public class HorizonPoint implements Cloneable {
+    @Override
+    protected Object clone() {
+        return new HorizonPoint(this.maxWidth, this.maxHeight, this.maxHeight - this.y, x);
+    }
+
     private Random rand = new Random();
+    private int maxWidth;
+    private int maxHeight;
     private int deltaPlus = 5;
     private int deltaMinus = -5;
     private int delta = deltaPlus - deltaMinus;
@@ -14,11 +21,13 @@ public class HorizonPoint {
     public int x;
     public int y;
 
-    public HorizonPoint(int horizonAltitude, int x) {
+    public HorizonPoint(int maxWidth, int maxHeight, int horizonAltitude, int x) {
         this.x = x;
-        this.y = horizonAltitude;
+        this.y = maxHeight - horizonAltitude;
         this.horizonMaxAlt = horizonAltitude + 100;
         this.horizonMinAlt = horizonAltitude - 100;
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
     }
 
     public void evolve() {
@@ -34,15 +43,19 @@ public class HorizonPoint {
     }
 
     public void dropAltitude() {
-        this.dropAltitude(20);
+        this.dropAltitude(2);
     }
 
     public void dropAltitude(int deltaY) {
-        int newAlt = this.y - Math.abs(deltaY);
-        if (newAlt < 0) {
-            this.y = 0;
+        int newHeight = this.y + Math.abs(deltaY); // altitude is going up but y is going down
+        if (newHeight > maxHeight) {
+            this.y = maxHeight;
+            this.horizonMaxAlt = maxHeight;
+            this.horizonMinAlt = maxHeight;
         } else {
-            this.y -= Math.abs(deltaY);
+            this.y += Math.abs(deltaY);
+            this.horizonMaxAlt += Math.abs(deltaY);
+            this.horizonMinAlt += Math.abs(deltaY);
         }
     }
 
