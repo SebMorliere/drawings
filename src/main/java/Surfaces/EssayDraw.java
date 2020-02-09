@@ -13,8 +13,9 @@ public class EssayDraw extends JPanel implements ActionListener {
     private Timer timer;
     private Color lightBlue = new Color(100, 160, 240);
     private Color darkBlue = new Color(40, 100, 180);
-    private int step = 60;
-    private int landscapeMaxSize = 800;
+    private int xStepSize = 30;
+    private int landscapeBufferSize = 800;
+    private int startingAlt = 1100;
 
     private ArrayList<HorizonPoint> horizonPointList;
     private ArrayList<ArrayList<HorizonPoint>> landscape;
@@ -31,9 +32,9 @@ public class EssayDraw extends JPanel implements ActionListener {
         int x = 0;
         int maxH = this.getHeight();
         int maxW = this.getWidth();
-        while (x < maxW + step) {
-            horizonPointList.add(new HorizonPoint(maxW, maxH, 1100, x > maxW ? maxW : x));
-            x += step;
+        while (x < maxW + xStepSize) {
+            horizonPointList.add(new HorizonPoint(maxW, maxH, startingAlt, x > maxW ? maxW : x));
+            x += xStepSize;
         }
     }
 
@@ -52,7 +53,9 @@ public class EssayDraw extends JPanel implements ActionListener {
             this.drawLines(g, this.horizonPointList, lightBlue);
             this.landscape.add(this.cloneHP(this.horizonPointList));
         } else {
-            this.landscape.forEach(horizonPoints -> horizonPoints.forEach(HorizonPoint::dropAltitude));
+            this.landscape.forEach(horizonPoints -> horizonPoints.forEach(horizonPoint -> {
+                horizonPoint.dropAltitude(5);
+            }));
             this.horizonPointList.forEach(HorizonPoint::evolve);
             this.drawLines(g, this.horizonPointList, darkBlue);
             this.landscape.forEach(horizonPoints -> drawLines(g, horizonPoints, lightBlue));
@@ -82,7 +85,7 @@ public class EssayDraw extends JPanel implements ActionListener {
 
     private void cleanLandscape() {
         int idx = this.landscape.size();
-        while (idx > landscapeMaxSize) {
+        while (idx > landscapeBufferSize) {
             this.landscape.remove(idx - 1);
             idx = this.landscape.size();
         }
