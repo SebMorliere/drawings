@@ -13,16 +13,15 @@ public class EssayFrame extends JFrame {
     private EssayDraw essayDraw;
 
     public EssayFrame() throws HeadlessException {
-        System.out.println("EssayFrame under construction");
         this.setTitle("ima biutiful windo - Essay");
         this.setSize(Default.WIDTH, Default.HEIGHT);
         this.setLocationRelativeTo(null);
 
-        essayDraw = new EssayDraw();
 
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setUndecorated(true);
 
+        essayDraw = new EssayDraw();
         this.add(essayDraw);
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -31,16 +30,6 @@ public class EssayFrame extends JFrame {
             }
         });
         this.addKeyListener(new KeyAdapter() {
-//            @Override
-//            public void keyTyped(KeyEvent e) {
-//                System.out.println("keyPressed");
-//            }
-//
-//            @Override
-//            public void keyPressed(KeyEvent e) {
-//                System.out.println("keyTyped");
-//            }
-
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -52,6 +41,5 @@ public class EssayFrame extends JFrame {
         });
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
-        System.out.println("EssayFrame constructed");
     }
 }
