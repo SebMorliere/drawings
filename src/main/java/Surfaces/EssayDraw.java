@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import static conf.Default.REFRESH_RATE;
 
@@ -13,6 +14,7 @@ public class EssayDraw extends JPanel implements ActionListener {
     private Color lightBlue = new Color(100, 160, 240);
     private Color darkBlue = new Color(40, 100, 180);
     private int step = 60;
+    private int landscapeMaxSize = 800;
 
     private ArrayList<HorizonPoint> horizonPointList;
     private ArrayList<ArrayList<HorizonPoint>> landscape;
@@ -30,11 +32,7 @@ public class EssayDraw extends JPanel implements ActionListener {
         int maxH = this.getHeight();
         int maxW = this.getWidth();
         while (x < maxW + step) {
-            if (x > maxW) {
-                horizonPointList.add(new HorizonPoint(maxW, maxH, Math.round(EssayDraw.this.getHeight() / 2f), maxW));
-            } else {
-                horizonPointList.add(new HorizonPoint(maxW, maxH, Math.round(EssayDraw.this.getHeight() / 2f), x));
-            }
+            horizonPointList.add(new HorizonPoint(maxW, maxH, 1100, x > maxW ? maxW : x));
             x += step;
         }
     }
@@ -84,10 +82,13 @@ public class EssayDraw extends JPanel implements ActionListener {
 
     private void cleanLandscape() {
         int idx = this.landscape.size();
-        while (idx > 250) {
+        while (idx > landscapeMaxSize) {
             this.landscape.remove(idx - 1);
             idx = this.landscape.size();
         }
+        this.landscape = this.landscape.stream()
+                .filter(hplist -> !hplist.stream().allMatch(horizonPoint -> horizonPoint.y >= this.getHeight()))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override

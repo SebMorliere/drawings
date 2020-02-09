@@ -4,10 +4,8 @@ import java.util.Collections;
 import java.util.Random;
 
 public class HorizonPoint implements Cloneable {
-    @Override
-    protected Object clone() {
-        return new HorizonPoint(this.maxWidth, this.maxHeight, this.maxHeight - this.y, x);
-    }
+    public int x;
+    public int y;
 
     private Random rand = new Random();
     private int maxWidth;
@@ -15,31 +13,22 @@ public class HorizonPoint implements Cloneable {
     private int deltaPlus = 5;
     private int deltaMinus = -5;
     private int delta = deltaPlus - deltaMinus;
-    private int horizonMaxAlt;
-    private int horizonMinAlt;
-
-    public int x;
-    public int y;
+    private int yMax;
+    private int yMin;
 
     public HorizonPoint(int maxWidth, int maxHeight, int horizonAltitude, int x) {
-        this.x = x;
-        this.y = maxHeight - horizonAltitude;
-        this.horizonMaxAlt = horizonAltitude + 100;
-        this.horizonMinAlt = horizonAltitude - 100;
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
+        this.x = x;
+        this.y = horizonAltitude > maxHeight ? 0 : maxHeight - horizonAltitude;
+        this.yMax = this.y + 100 > maxHeight ? maxHeight : this.y + 100;
+        this.yMin = this.y - 100 < 0 ? 0 : this.y - 100;
     }
 
     public void evolve() {
         int rnd = rand.nextInt(delta + 1) + deltaMinus;
         int newAlt = this.y + rnd;
-        if (newAlt > horizonMaxAlt) {
-            this.y = horizonMaxAlt;
-        } else if (newAlt < horizonMinAlt) {
-            this.y = horizonMinAlt;
-        } else {
-            this.y = newAlt;
-        }
+        this.y =  newAlt > yMax ? yMax : newAlt < yMin ? yMin : newAlt;
     }
 
     public void dropAltitude() {
@@ -50,18 +39,23 @@ public class HorizonPoint implements Cloneable {
         int newHeight = this.y + Math.abs(deltaY); // altitude is going up but y is going down
         if (newHeight > maxHeight) {
             this.y = maxHeight;
-            this.horizonMaxAlt = maxHeight;
-            this.horizonMinAlt = maxHeight;
+            this.yMax = maxHeight;
+            this.yMin = maxHeight;
         } else {
             this.y += Math.abs(deltaY);
-            this.horizonMaxAlt += Math.abs(deltaY);
-            this.horizonMinAlt += Math.abs(deltaY);
+            this.yMax += Math.abs(deltaY);
+            this.yMin += Math.abs(deltaY);
         }
     }
 
     @Override
+    protected Object clone() {
+        return new HorizonPoint(this.maxWidth, this.maxHeight, this.maxHeight - this.y, x);
+    }
+
+    @Override
     public String toString() {
-        return "x: " + String.join("", Collections.nCopies(4 - String.valueOf(x).length(), " ")) + x
-                + " | y: " + String.join("", Collections.nCopies(3 - String.valueOf(y).length(), " ")) + y;
+        return "x: " + String.join("", Collections.nCopies(6 - String.valueOf(x).length(), " ")) + x
+                + " | y: " + String.join("", Collections.nCopies(6 - String.valueOf(y).length(), " ")) + y;
     }
 }
