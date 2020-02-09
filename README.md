@@ -1,4 +1,4 @@
-# drawings
+# Drawings
 experimentations with awt and swing - Java 8
 
 ## What's inside?
