@@ -1,4 +1,4 @@
-package examples.drawings.buttons;
+package main.menu;
 
 import essay.EssayFrame;
 import mandelbrot.MandelbrotFrame;
@@ -10,10 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
-public class ImageIconButtonEx extends JFrame implements ActionListener {
+public class MainMenu extends JFrame implements ActionListener {
 
 
-    public ImageIconButtonEx() {
+    public MainMenu() {
         ImageIcon homeIcon = new ImageIcon("src/resources/icon-9-dots.png");
         ImageIcon saveIcon = new ImageIcon("src/resources/icon-save-big.png");
         ImageIcon exitIcon = new ImageIcon("src/resources/icon-exit-big.png");

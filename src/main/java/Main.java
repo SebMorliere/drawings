@@ -1,6 +1,4 @@
-import essay.EssayFrame;
-import examples.drawings.buttons.ImageIconButtonEx;
-import mandelbrot.MandelbrotFrame;
+import main.menu.MainMenu;
 
 import java.awt.*;
 
@@ -10,7 +8,7 @@ public class Main {
 
 //        EventQueue.invokeLater(EssayFrame::new);
 //        EventQueue.invokeLater(MandelbrotFrame::new);
-        EventQueue.invokeLater(ImageIconButtonEx::new);
+        EventQueue.invokeLater(MainMenu::new);
     }
 }
 

@@ -1,4 +1,4 @@
-package examples.drawings.buttons;
+package main.menu;
 
 public enum ButtonLabels {
     HOME("Home"),
