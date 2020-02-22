@@ -1,7 +1,5 @@
 package essay;
 
-import conf.Default;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -15,10 +13,10 @@ public class EssayFrame extends JFrame {
     public EssayFrame() throws HeadlessException {
         this.setTitle("ima biutiful windo - Essay");
         this.setSize(90, 600);
+//        this.setSize(this.getWidth(), this.getHeight());
         this.setLocationRelativeTo(null);
 
-
-//        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setUndecorated(true);
 
         essayDraw = new EssayDraw();
@@ -39,7 +37,7 @@ public class EssayFrame extends JFrame {
                 }
             }
         });
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
     }
 }

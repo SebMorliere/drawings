@@ -1,4 +1,4 @@
-package examples;
+package examples.drawings;
 
 import static conf.Default.HEIGHT;
 import static conf.Default.WIDTH;

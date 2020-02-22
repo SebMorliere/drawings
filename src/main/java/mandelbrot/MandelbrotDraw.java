@@ -22,6 +22,8 @@ public class MandelbrotDraw extends JPanel {
     private MAlgo mandelbrot;
 
     public MandelbrotDraw() {
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
         this.setBackground(Color.BLACK);
         this.screenPixels = new ArrayList<>();
     }
@@ -94,6 +96,7 @@ public class MandelbrotDraw extends JPanel {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         this.draw((Graphics2D) graphics);
+        this.setCursor(Cursor.getDefaultCursor());
     }
 
     public static DoubleStream scale(int xMin, int xMax, double aMin, double aMax) {

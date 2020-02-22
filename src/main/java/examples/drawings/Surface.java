@@ -1,4 +1,4 @@
-package examples;
+package examples.drawings;
 
 import javax.swing.*;
 import java.awt.*;

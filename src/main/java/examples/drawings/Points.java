@@ -1,4 +1,4 @@
-package examples;
+package examples.drawings;
 
 import java.awt.*;
 import java.util.Random;
