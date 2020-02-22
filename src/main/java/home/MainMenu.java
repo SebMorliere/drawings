@@ -1,4 +1,4 @@
-package main.menu;
+package home;
 
 import essay.EssayFrame;
 import mandelbrot.MandelbrotFrame;
@@ -14,16 +14,11 @@ public class MainMenu extends JFrame implements ActionListener {
 
 
     public MainMenu() {
-        ImageIcon homeIcon = new ImageIcon("src/resources/icon-9-dots.png");
-        ImageIcon saveIcon = new ImageIcon("src/resources/icon-save-big.png");
-        ImageIcon exitIcon = new ImageIcon("src/resources/icon-exit-big.png");
-        ImageIcon blurIcon = new ImageIcon("src/resources/icon-blur-big.png");
-        ImageIcon gradientIcon = new ImageIcon("src/resources/icon-gradient-big.png");
-
         JButton[] buttonArray = new JButton[]{
-                new JButton(ButtonLabels.MANDELBROT.label, blurIcon),
-                new JButton(ButtonLabels.WATERFALL.label, gradientIcon),
-                new JButton(ButtonLabels.QUIT.label, exitIcon)
+                Buttons.MANDELBROT.button,
+                Buttons.WATERFALL.button,
+                Buttons.G2048.button,
+                Buttons.QUIT.button
         };
         Arrays.stream(buttonArray).forEach(btn -> btn.addActionListener(this));
 
@@ -58,11 +53,11 @@ public class MainMenu extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(ButtonLabels.QUIT.label)) {
+        if (e.getActionCommand().equals(Buttons.QUIT.label)) {
             this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-        } else if (e.getActionCommand().equals(ButtonLabels.MANDELBROT.label)) {
+        } else if (e.getActionCommand().equals(Buttons.MANDELBROT.label)) {
             new MandelbrotFrame();
-        } else if (e.getActionCommand().equals(ButtonLabels.WATERFALL.label)) {
+        } else if (e.getActionCommand().equals(Buttons.WATERFALL.label)) {
             new EssayFrame();
         }
     }

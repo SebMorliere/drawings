@@ -1,4 +1,4 @@
-import main.menu.MainMenu;
+import home.MainMenu;
 
 import java.awt.*;
 
