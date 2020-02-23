@@ -1,6 +1,7 @@
 package home;
 
 import essay.EssayFrame;
+import game2048.Game2048Frame;
 import mandelbrot.MandelbrotFrame;
 
 import javax.swing.*;
@@ -22,7 +23,7 @@ public class MainMenu extends JFrame implements ActionListener {
         };
         Arrays.stream(buttonArray).forEach(btn -> btn.addActionListener(this));
 
-        createLayout(buttonArray);
+        this.createLayout(buttonArray);
 
         this.setTitle("Awesome Buttons");
         this.setLocationRelativeTo(null);
@@ -47,7 +48,6 @@ public class MainMenu extends JFrame implements ActionListener {
         gl.setVerticalGroup(pg);
 
         gl.linkSize(arg);
-
         this.pack();
     }
 
@@ -59,6 +59,8 @@ public class MainMenu extends JFrame implements ActionListener {
             new MandelbrotFrame();
         } else if (e.getActionCommand().equals(Buttons.WATERFALL.label)) {
             new EssayFrame();
+        } else if (e.getActionCommand().equals(Buttons.G2048.label)) {
+            new Game2048Frame();
         }
     }
 }
