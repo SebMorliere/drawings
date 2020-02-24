@@ -6,9 +6,7 @@ import mandelbrot.MandelbrotFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.Arrays;
 
 public class MainMenu extends JFrame implements ActionListener {
@@ -29,6 +27,12 @@ public class MainMenu extends JFrame implements ActionListener {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+
+// // display all system fonts
+//        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        Font[] fonts = ge.getAllFonts();
+//        Arrays.stream(fonts).forEach(font -> System.out.println(font.getFontName() + " : " + font.getFamily()));
+
     }
 
     private void createLayout(JComponent... arg) {
