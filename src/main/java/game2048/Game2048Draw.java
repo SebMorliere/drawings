@@ -6,6 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -17,10 +22,12 @@ public class Game2048Draw extends JPanel implements ActionListener {
     private Boolean isMoving;
     private Grid<Cell> grid;
 
+    final int cellLength = Game2048Frame.cellPixellength;
+
     public Game2048Draw(int width, int height) {
         this.timer = new Timer(REFRESH_RATE, this);
         this.timer.start();
-        this.setBackground(Color.BLACK);
+        this.setBackground(new Color(90, 90, 90));
         this.initGrid(width, height);
         KeyAdapter keyAdapter = new KeyAdapter() {
             @Override
@@ -57,7 +64,6 @@ public class Game2048Draw extends JPanel implements ActionListener {
                 this.grid.setCell(idx, new Cell(ColoredValue.RANK_1));
             }
         });
-        System.out.println(this.grid.toString());
     }
 
     public Timer getTimer() {
@@ -69,40 +75,74 @@ public class Game2048Draw extends JPanel implements ActionListener {
         rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHints(rh);
         int fontSize = Math.round(Game2048Frame.cellPixellength * 0.40f);
+        int cellMargin = Math.round(Game2048Frame.cellPixellength * 0.04f);
+        int cellRadius = Math.round(Game2048Frame.cellPixellength * 0.10f);
 
         IntStream.range(0, this.grid.height).forEach(lineIndex -> {
             IntStream.range(0, this.grid.width).forEach(colIndex -> {
-                Optional<Cell> cell = this.grid.getCell(lineIndex, colIndex);
-                if (cell.isPresent()) {
-                    g.setColor(cell.get().params.bgColor);
-                    Rectangle rect = new Rectangle(
-                            colIndex * Game2048Frame.cellPixellength,
-                            lineIndex * Game2048Frame.cellPixellength,
-                            Game2048Frame.cellPixellength, Game2048Frame.cellPixellength
-                    );
-                    g.fill(rect);
-                    Font font = new Font("Arial", Font.PLAIN, fontSize);
-                    g.setColor(cell.get().params.fontColor);
-                    drawCenteredString(g, cell.get().params.value.toString(), rect, font);
-                } else {
-                    g.setColor(new Color(13, 52, 76));
-                    g.fillRect(colIndex * Game2048Frame.cellPixellength, lineIndex * Game2048Frame.cellPixellength, Game2048Frame.cellPixellength, Game2048Frame.cellPixellength);
-                }
+                final Coords coords = getCellPosition(lineIndex, colIndex);
+                this.grid.getCell(lineIndex, colIndex)
+                        .ifPresent(value -> drawCell(g, value, coords));
             });
         });
     }
 
-    private void drawCenteredString(Graphics2D g, String text, Rectangle rect, Font font) {
+    private Coords getCellPosition(int lineIndex, int colIndex) {
+        return new Coords(colIndex * cellLength, lineIndex * cellLength);
+    }
+
+    private void drawCell(Graphics2D g, Cell cell, Coords coords) {
+        final int fontSize = Math.round(cellLength * 0.350f);
+        final int cellMargin = Math.round(cellLength * 0.04f);
+        final int cellRadius = Math.round(cellLength * 0.10f);
+
+
+        g.setColor(cell.params.bgColor);
+        final RoundRectangle2D roundedRect = new RoundRectangle2D.Double(
+                coords.x + cellMargin,
+                coords.y + cellMargin,
+                cellLength - cellMargin * 2,
+                cellLength - cellMargin * 2,
+                cellRadius,
+                cellRadius
+        );
+        g.fill(roundedRect);
+        GradientPaint gradient = new GradientPaint(
+                coords.x + cellMargin,
+                coords.y + cellMargin,
+                new Color(255,255,255,0),
+                coords.x + cellLength - 2*cellMargin,
+                coords.y + cellLength - 2*cellMargin,
+                new Color(255,255,255,30)
+        );
+        g.setPaint(gradient);
+//                    g.setColor(new Color(255,255,255, 100));
+        final RoundRectangle2D innerRect = new RoundRectangle2D.Double(
+                coords.x + cellMargin * 3,
+                coords.y + cellMargin * 3,
+                cellLength - cellMargin * 6,
+                cellLength - cellMargin * 6,
+                cellRadius * 5,
+                cellRadius * 5
+        );
+        g.fill(innerRect);
+
+        Font font = new Font("Arial Rounded MT Bold", Font.PLAIN, fontSize);
+        g.setColor(cell.params.fontColor);
+        drawCenteredString(g, cell.params.value.toString(), roundedRect, font);
+    }
+
+    private void drawCenteredString(Graphics2D g, String text, RoundRectangle2D rect, Font font) {
         // Get the FontMetrics
         FontMetrics metrics = g.getFontMetrics(font);
         // Determine the X coordinate for the text
-        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
+        double x = rect.getX() + (rect.getWidth() - metrics.stringWidth(text)) / 2;
         // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
-        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+        double y = rect.getY() + ((rect.getHeight() - metrics.getHeight()) / 2) + metrics.getAscent();
         // Set the font
         g.setFont(font);
         // Draw the String
-        g.drawString(text, x, y);
+        g.drawString(text, Math.round(x), Math.round(y));
     }
 
     @Override
@@ -115,4 +155,15 @@ public class Game2048Draw extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         repaint();
     }
+
+    private static class Coords {
+        int x;
+        int y;
+
+        public Coords(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
 }
+
