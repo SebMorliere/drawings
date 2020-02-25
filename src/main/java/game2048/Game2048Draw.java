@@ -6,30 +6,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 import static conf.Default.REFRESH_RATE;
 
 public class Game2048Draw extends JPanel implements ActionListener {
+    final int cellLength = Game2048Frame.cellPixellength;
+
     private Timer timer;
     private int animationDuration = 200; /*ms*/
     private Boolean isMoving;
     private Grid<Cell> grid;
 
-    final int cellLength = Game2048Frame.cellPixellength;
-
-    public Game2048Draw(int width, int height) {
-        this.timer = new Timer(REFRESH_RATE, this);
-        this.timer.start();
-        this.setBackground(new Color(90, 90, 90));
-        this.initGrid(width, height);
-        KeyAdapter keyAdapter = new KeyAdapter() {
+    public KeyAdapter getKeyAdapter() {
+        return new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -45,23 +38,32 @@ public class Game2048Draw extends JPanel implements ActionListener {
                 }
             }
         };
-        this.addKeyListener(keyAdapter);
+    }
+
+    public Game2048Draw(int width, int height) {
+        this.timer = new Timer(REFRESH_RATE, this);
+        this.timer.start();
+        this.setBackground(new Color(90, 90, 90));
+        this.initGrid(width, height);
     }
 
     private void initGrid(int width, int height) {
         this.isMoving = false;
         this.grid = new Grid<Cell>(width, height);
+        Random random = new Random();
         this.grid.streamIndex().forEach(idx -> {
-            if (idx > 11) {
-                this.grid.setCell(idx, new Cell(ColoredValue.RANK_6));
-
-            } else if (idx > 7) {
+            final int num = random.nextInt(101);
+            System.out.println(num);
+            if (num == 100) {
                 this.grid.setCell(idx, new Cell(ColoredValue.RANK_4));
-
-            } else if (idx > 3) {
+            } else if (num > 97) {
+                this.grid.setCell(idx, new Cell(ColoredValue.RANK_3));
+            } else if (num > 95) {
                 this.grid.setCell(idx, new Cell(ColoredValue.RANK_2));
-            } else {
+            } else if (num > 80) {
                 this.grid.setCell(idx, new Cell(ColoredValue.RANK_1));
+            } else {
+                // Do nothing, keep cell empty
             }
         });
     }
@@ -74,20 +76,17 @@ public class Game2048Draw extends JPanel implements ActionListener {
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHints(rh);
-        int fontSize = Math.round(Game2048Frame.cellPixellength * 0.40f);
-        int cellMargin = Math.round(Game2048Frame.cellPixellength * 0.04f);
-        int cellRadius = Math.round(Game2048Frame.cellPixellength * 0.10f);
 
         IntStream.range(0, this.grid.height).forEach(lineIndex -> {
             IntStream.range(0, this.grid.width).forEach(colIndex -> {
-                final Coords coords = getCellPosition(lineIndex, colIndex);
+                final Coords coords = getCellCoords(lineIndex, colIndex);
                 this.grid.getCell(lineIndex, colIndex)
                         .ifPresent(value -> drawCell(g, value, coords));
             });
         });
     }
 
-    private Coords getCellPosition(int lineIndex, int colIndex) {
+    private Coords getCellCoords(int lineIndex, int colIndex) {
         return new Coords(colIndex * cellLength, lineIndex * cellLength);
     }
 
