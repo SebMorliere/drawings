@@ -51,21 +51,13 @@ public class Game2048Draw extends JPanel implements ActionListener {
         this.isMoving = false;
         this.grid = new Grid<Cell>(width, height);
         Random random = new Random();
-        this.grid.streamIndex().forEach(idx -> {
-            final int num = random.nextInt(101);
-            System.out.println(num);
-            if (num == 100) {
-                this.grid.setCell(idx, new Cell(ColoredValue.RANK_4));
-            } else if (num > 97) {
-                this.grid.setCell(idx, new Cell(ColoredValue.RANK_3));
-            } else if (num > 95) {
-                this.grid.setCell(idx, new Cell(ColoredValue.RANK_2));
-            } else if (num > 80) {
-                this.grid.setCell(idx, new Cell(ColoredValue.RANK_1));
-            } else {
-                // Do nothing, keep cell empty
-            }
-        });
+        final int index1 = random.nextInt(this.grid.size());
+        int index2 = random.nextInt(this.grid.size());
+        while (index2 == index1) {
+            index2 = random.nextInt(this.grid.size());
+        }
+        this.grid.setCell(index1, new Cell(random.nextInt(10) > 2 ? ColoredValue.RANK_1 : ColoredValue.RANK_2));
+        this.grid.setCell(index2, new Cell(random.nextInt(10) > 2 ? ColoredValue.RANK_1 : ColoredValue.RANK_2));
     }
 
     public Timer getTimer() {
