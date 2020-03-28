@@ -8,8 +8,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.util.Optional;
-import java.util.Random;
-import java.util.stream.IntStream;
 
 import static conf.Default.REFRESH_RATE;
 
@@ -17,9 +15,9 @@ public class Game2048Draw extends JPanel implements ActionListener {
     final int cellLength = Game2048Frame.cellPixellength;
 
     private Timer timer;
-    private int animationDuration = 200; /*ms*/
-    private Boolean isMoving;
+    private int animationDuration = 150; /*ms*/
     private Grid<Cell> grid;
+    public boolean isMoving;
 
     public KeyAdapter getKeyAdapter() {
         return new KeyAdapter() {
@@ -29,10 +27,30 @@ public class Game2048Draw extends JPanel implements ActionListener {
                     System.out.println(">>> UP");
                 } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     System.out.println(">>> DOWN");
+                    System.out.println(grid.streamCells().count());
+                    grid.streamCells().forEach(cell -> {
+                        System.out.println(cell);
+                        grid.getCell(cell.lineIndex, cell.columnIndex).ifPresent(System.out::println);
+                    });
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     System.out.println(">>> LEFT");
+                    Algo.slideLeft(grid);
+                    Optional<GridSpot> newSpot = grid.getRandomFreeSpot();
+                    if (newSpot.isPresent()) {
+                        grid.addCell(new Cell(newSpot.get(), Cell.generateRandomRank()));
+                    } else {
+                        System.out.println("GAME ENDED!!!");
+                    }
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     System.out.println(">>> RIGHT");
+                    if (Algo.slideRight(grid).size() > 0) {
+                        Optional<GridSpot> newSpot = grid.getRandomFreeSpot();
+                        if (newSpot.isPresent()) {
+                            grid.addCell(new Cell(newSpot.get(), Cell.generateRandomRank()));
+                        } else {
+                            System.out.println("GAME ENDED!!!");
+                        }
+                    }
                 } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     System.out.println(grid);
                 }
@@ -45,19 +63,13 @@ public class Game2048Draw extends JPanel implements ActionListener {
         this.timer.start();
         this.setBackground(new Color(90, 90, 90));
         this.initGrid(width, height);
+        this.isMoving = false;
     }
 
     private void initGrid(int width, int height) {
-        this.isMoving = false;
         this.grid = new Grid<Cell>(width, height);
-        Random random = new Random();
-        final int index1 = random.nextInt(this.grid.size());
-        int index2 = random.nextInt(this.grid.size());
-        while (index2 == index1) {
-            index2 = random.nextInt(this.grid.size());
-        }
-        this.grid.setCell(index1, new Cell(random.nextInt(10) > 2 ? ColoredValue.RANK_1 : ColoredValue.RANK_2));
-        this.grid.setCell(index2, new Cell(random.nextInt(10) > 2 ? ColoredValue.RANK_1 : ColoredValue.RANK_2));
+        this.grid.addCell(new Cell(grid.getRandomFreeSpot().get(), Cell.generateRandomStartingRank()));
+        this.grid.addCell(new Cell(grid.getRandomFreeSpot().get(), Cell.generateRandomStartingRank()));
     }
 
     public Timer getTimer() {
@@ -69,48 +81,48 @@ public class Game2048Draw extends JPanel implements ActionListener {
         rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHints(rh);
 
-        IntStream.range(0, this.grid.height).forEach(lineIndex -> {
-            IntStream.range(0, this.grid.width).forEach(colIndex -> {
-                final Coords coords = getCellCoords(lineIndex, colIndex);
-                this.grid.getCell(lineIndex, colIndex)
-                        .ifPresent(value -> drawCell(g, value, coords));
-            });
-        });
+        this.grid.streamCells().forEach(cell -> {
+            drawCell(g, cell);
+        })
+        ;
     }
 
-    private Coords getCellCoords(int lineIndex, int colIndex) {
+    private Coords getCellCoordsFromIndex(int lineIndex, int colIndex) {
         return new Coords(colIndex * cellLength, lineIndex * cellLength);
     }
 
-    private void drawCell(Graphics2D g, Cell cell, Coords coords) {
+    private void drawCell(Graphics2D g, Cell cell) {
         final int fontSize = Math.round(cellLength * 0.350f);
         final int cellMargin = Math.round(cellLength * 0.04f);
         final int cellRadius = Math.round(cellLength * 0.10f);
 
+        ColoredValue cellParams = ColoredValue.values()[Math.min(15, cell.rank - 1)];
+        Coords cellCoords = this.getCellCoordsFromIndex(cell.lineIndex, cell.columnIndex);
 
-        g.setColor(cell.params.bgColor);
+        g.setColor(cellParams.bgColor);
         final RoundRectangle2D roundedRect = new RoundRectangle2D.Double(
-                coords.x + cellMargin,
-                coords.y + cellMargin,
+                cellCoords.x + cellMargin,
+                cellCoords.y + cellMargin,
                 cellLength - cellMargin * 2,
                 cellLength - cellMargin * 2,
                 cellRadius,
                 cellRadius
         );
         g.fill(roundedRect);
+
         GradientPaint gradient = new GradientPaint(
-                coords.x + cellMargin,
-                coords.y + cellMargin,
-                new Color(255,255,255,0),
-                coords.x + cellLength - 2*cellMargin,
-                coords.y + cellLength - 2*cellMargin,
-                new Color(255,255,255,30)
+                cellCoords.x + cellMargin,
+                cellCoords.y + cellMargin,
+                new Color(255, 255, 255, 0),
+                cellCoords.x + cellLength - 2 * cellMargin,
+                cellCoords.y + cellLength - 2 * cellMargin,
+                new Color(255, 255, 255, 30)
         );
         g.setPaint(gradient);
 //                    g.setColor(new Color(255,255,255, 100));
         final RoundRectangle2D innerRect = new RoundRectangle2D.Double(
-                coords.x + cellMargin * 3,
-                coords.y + cellMargin * 3,
+                cellCoords.x + cellMargin * 3,
+                cellCoords.y + cellMargin * 3,
                 cellLength - cellMargin * 6,
                 cellLength - cellMargin * 6,
                 cellRadius * 5,
@@ -119,8 +131,8 @@ public class Game2048Draw extends JPanel implements ActionListener {
         g.fill(innerRect);
 
         Font font = new Font("Arial Rounded MT Bold", Font.PLAIN, fontSize);
-        g.setColor(cell.params.fontColor);
-        drawCenteredString(g, cell.params.value.toString(), roundedRect, font);
+        g.setColor(cellParams.fontColor);
+        drawCenteredString(g, cell.getValue(), roundedRect, font);
     }
 
     private void drawCenteredString(Graphics2D g, String text, RoundRectangle2D rect, Font font) {

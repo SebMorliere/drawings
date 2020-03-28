@@ -23,6 +23,7 @@ public class Game2048Frame extends JFrame {
         this.setUndecorated(true);
 
         game = new Game2048Draw(gridWidth, gridHeight);
+        KeyAdapter gameKeyAdapter = game.getKeyAdapter();
         this.add(game);
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -32,11 +33,24 @@ public class Game2048Frame extends JFrame {
         });
         this.addKeyListener(new KeyAdapter() {
             @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                gameKeyAdapter.keyTyped(e);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+                gameKeyAdapter.keyPressed(e);
+            }
+
+            @Override
             public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     Game2048Frame.this.dispatchEvent(new WindowEvent(Game2048Frame.this, WindowEvent.WINDOW_CLOSING));
                 } else {
-                    System.out.println("*** keyReleased was: " + e.paramString());
+                    gameKeyAdapter.keyReleased(e);
                 }
             }
         });
