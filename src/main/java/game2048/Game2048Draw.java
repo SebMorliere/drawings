@@ -33,16 +33,15 @@ public class Game2048Draw extends JPanel implements ActionListener {
                         grid.getCell(cell.lineIndex, cell.columnIndex).ifPresent(System.out::println);
                     });
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    System.out.println(">>> LEFT");
-                    Algo.slideLeft(grid);
-                    Optional<GridSpot> newSpot = grid.getRandomFreeSpot();
-                    if (newSpot.isPresent()) {
-                        grid.addCell(new Cell(newSpot.get(), Cell.generateRandomRank()));
-                    } else {
-                        System.out.println("GAME ENDED!!!");
+                    if (Algo.slideLeft(grid).size() > 0) {
+                        Optional<GridSpot> newSpot = grid.getRandomFreeSpot();
+                        if (newSpot.isPresent()) {
+                            grid.addCell(new Cell(newSpot.get(), Cell.generateRandomRank()));
+                        } else {
+                            System.out.println("GAME ENDED!!!");
+                        }
                     }
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    System.out.println(">>> RIGHT");
                     if (Algo.slideRight(grid).size() > 0) {
                         Optional<GridSpot> newSpot = grid.getRandomFreeSpot();
                         if (newSpot.isPresent()) {
